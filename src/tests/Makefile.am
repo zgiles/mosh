@@ -39,8 +39,8 @@ displaytests = \
 	unicode-later-combining.test \
 	window-resize.test
 
-check_PROGRAMS = ocb-aes encrypt-decrypt base64 nonce-incr inpty is-utf8-locale uaf-transport
-TESTS = ocb-aes encrypt-decrypt base64 nonce-incr uaf-transport local.test $(displaytests)
+check_PROGRAMS = ocb-aes encrypt-decrypt base64 nonce-incr inpty is-utf8-locale uaf-transport resize-safety
+TESTS = ocb-aes encrypt-decrypt base64 nonce-incr uaf-transport resize-safety local.test $(displaytests)
 XFAIL_TESTS = \
 	e2e-failure.test \
 	emulation-attributes-256color8.test
@@ -78,6 +78,10 @@ is_utf8_locale_LDADD = ../util/libmoshutil.a $(LIBUTIL)
 uaf_transport_SOURCES = uaf-transport.cc
 uaf_transport_CPPFLAGS = -I$(top_srcdir)/ $(protobuf_CFLAGS) $(CRYPTO_CFLAGS) $(TINFO_CFLAGS)
 uaf_transport_LDADD = ../crypto/libmoshcrypto.a ../network/libmoshnetwork.a ../statesync/libmoshstatesync.a ../terminal/libmoshterminal.a ../util/libmoshutil.a ../protobufs/libmoshprotos.a -lm $(TINFO_LIBS) $(protobuf_LIBS) $(CRYPTO_LIBS)
+
+resize_safety_SOURCES = resize-safety.cc
+resize_safety_CPPFLAGS = -I$(top_srcdir)/ $(TINFO_CFLAGS)
+resize_safety_LDADD = ../terminal/libmoshterminal.a ../util/libmoshutil.a $(TINFO_LIBS)
 
 clean-local: clean-local-check
 .PHONY: clean-local-check
