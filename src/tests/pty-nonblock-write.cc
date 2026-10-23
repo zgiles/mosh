@@ -37,7 +37,11 @@
    buffers what it can't accept. This test forks a child under a pty that never
    reads, then confirms that a write to the master returns EAGAIN promptly
    rather than blocking. An alarm() watchdog fails the test (by terminating it)
-   if a blocking write ever sneaks back in. */
+   if a blocking write ever sneaks back in.
+
+   The slave is put in raw mode, as full-screen programs like vim do. In
+   canonical mode macOS never blocks or returns EAGAIN on the master: it
+   discards input beyond MAX_CANON, so there is nothing to test there. */
 
 #include "src/include/config.h"
 
@@ -67,8 +71,13 @@
 
 int main( void )
 {
+  struct termios raw;
+  memset( &raw, 0, sizeof( raw ) );
+  cfmakeraw( &raw );
+  raw.c_cflag |= CREAD | CS8;
+
   int master = -1;
-  pid_t pid = forkpty( &master, NULL, NULL, NULL );
+  pid_t pid = forkpty( &master, NULL, &raw, NULL );
   if ( pid < 0 ) {
     perror( "forkpty" );
     return EXIT_FAILURE;
