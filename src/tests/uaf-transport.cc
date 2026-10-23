@@ -66,6 +66,7 @@
 /* Don't let the leak detector fail the test: the victim Transport and its
    sockets are intentionally not torn down.  A use-after-free is reported the
    moment it happens, independent of exit-time leak checking. */
+extern "C" const char* __asan_default_options( void );
 extern "C" const char* __asan_default_options( void )
 {
   return "detect_leaks=0";
